@@ -6,8 +6,6 @@ syn scan to detect living port.
 
 
 
-**ONLY AVAILABLE ON LINUX**
-
 usage :
 
 ```shell

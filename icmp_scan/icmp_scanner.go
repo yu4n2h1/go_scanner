@@ -3,6 +3,7 @@ package icmp_scan
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
 	"go_scanner/tools"
 	"math/rand"
 	"net"
@@ -47,14 +48,14 @@ func send_icmp(ip, seq int) bool {
 	payload := time_stamp
 	payload = append(payload, magic...)
 	icmp_pack := pack_icmp_echo_request(ident, uint16(seq), payload)
-	conn, err := net.DialTimeout("ip4:icmp", current_ip, 3*time.Second)
+	conn, err := net.DialTimeout("ip4:icmp", current_ip, 1*time.Second)
 	if err != nil {
 		return false
 	}
 	if _, err := conn.Write(icmp_pack); err != nil {
 		return false
 	}
-	conn.SetReadDeadline((time.Now().Add(time.Second * 3)))
+	conn.SetReadDeadline((time.Now().Add(time.Second * 1)))
 	recv := make([]byte, 1024)
 	len, err := conn.Read(recv)
 	if err != nil {
@@ -75,22 +76,21 @@ func send_icmp(ip, seq int) bool {
 func Ping(ip string, mask int) []string {
 	var wg sync.WaitGroup
 	var sub_wg sync.WaitGroup
-	rate := time.Second / 50000
+	rate := time.Second / 10000
 	throttle := time.Tick(rate)
 	ip_chan := make(chan int, 65536)
 	alive_chan := make(chan string, 65536)
 	thread_num := 15000
 	for i := 0; i < thread_num; i++ {
 		go func() {
-			wg.Add(1)
-			defer wg.Done()
 			for current_ip := range ip_chan {
 				// fmt.Println(current_ip)
-				sub_wg.Add(1)
 				if send_icmp(current_ip, i%65536) {
+					sub_wg.Add(1)
 					alive_chan <- tools.Int2ip(int32(current_ip))
+					fmt.Println("Host:", tools.Int2ip(int32(current_ip)), "is alive")
 				}
-				sub_wg.Done()
+				wg.Done()
 				<-throttle
 			}
 
@@ -101,10 +101,12 @@ func Ping(ip string, mask int) []string {
 	go func() {
 		for alive := range alive_chan {
 			alive_list = append(alive_list, alive)
+			sub_wg.Done()
 		}
 	}()
 
 	for i := min; i <= max; i++ {
+		wg.Add(1)
 		ip_chan <- i
 	}
 	close(ip_chan)

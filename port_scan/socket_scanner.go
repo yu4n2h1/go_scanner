@@ -5,12 +5,14 @@ import (
 	"net"
 	"strconv"
 	"sync"
+	"time"
 )
 
 func socket_conn(port int, ip string, wg *sync.WaitGroup) bool {
 	wg.Add(1)
+	d := &net.Dialer{Timeout: time.Duration(3) * time.Second}
 	target := ip + ":" + strconv.Itoa(port)
-	conn, err := net.Dial("tcp", target)
+	conn, err := d.Dial("tcp", target)
 
 	if err != nil {
 		return false

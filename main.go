@@ -5,22 +5,21 @@ import (
 	"fmt"
 	"go_scanner/icmp_scan"
 	"go_scanner/port_scan"
-	"go_scanner/tools"
 )
 
 func main() {
 	raddr := flag.String("i", "127.0.0.1", "Input the ip address you want to scan")
-	mask := flag.Int("m", 24, "Input the mask of target network")
+	mask := flag.Int("m", 31, "Input the mask of target network")
 	flag.Parse()
 
-	laddr := tools.Get_self(*raddr)
+	// laddr := tools.Get_self(*raddr)
 
 	res := icmp_scan.Ping(*raddr, *mask)
 	fmt.Println(res)
 	fmt.Println(len(res))
 
 	for _, ip := range res {
-		port_scan.Raw_socket_scan(laddr, ip)
+		port_scan.Socket_scan(ip)
 	}
 
 	// ip := "101.43.140.240"
