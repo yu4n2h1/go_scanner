@@ -3,7 +3,6 @@ package ping_scan
 import (
 	"bytes"
 	"fmt"
-	"go_scanner/tools"
 	"os/exec"
 	"strings"
 	"sync"
@@ -14,21 +13,19 @@ var alive_list []string
 
 // var mu sync.Mutex
 
-func CmdPing(ip string, mask int) []string {
-	min, max := tools.Get_ip_range(int(tools.Ip2int(ip)), mask)
+func CmdPing(ipslist []string) []string {
 	var wg sync.WaitGroup
-	wg.Add(int(max-min) + 1)
 	rate := 1000
 	rateLimit := time.Tick(time.Second / time.Duration(rate))
-	for i := min; i <= max; i++ {
-		go func(ip uint32) {
+	for _, ip := range ipslist {
+		wg.Add(1)
+		go func(ip string) {
 			<-rateLimit
 			defer wg.Done()
-			addr := tools.Int2ip(int32(ip))
+			addr := ip
 			ping(addr)
-		}(uint32(i))
+		}(ip)
 	}
-
 	wg.Wait()
 	return alive_list
 }
@@ -56,7 +53,7 @@ func CmdPing(ip string, mask int) []string {
 
 func ping(ip string) {
 	// fmt.Println(ip)
-	cmd := exec.Command("/bin/bash", "-c", "ping -c 1 -w 1 -W 100 "+ip+">/dev/null && echo true || echo false")
+	cmd := exec.Command("/bin/bash", "-c", "ping -c 1 -w -W 100 "+ip+">/dev/null && echo true || echo false")
 	var stdout, stderr bytes.Buffer
 	// output := bytes.Buffer{}
 	cmd.Stdout = &stdout

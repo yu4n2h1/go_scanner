@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"go_scanner/icmp_scan"
 	"go_scanner/ping_scan"
-	"go_scanner/port_scan"
 	"go_scanner/tools"
 )
 
@@ -16,24 +15,26 @@ func main() {
 	flag.Parse()
 
 	// laddr := tools.Get_self(*raddr)
-
+	var isping bool = *pingis
 	min, max := tools.Get_ip_range(int(tools.Ip2int(*raddr)), *mask)
 	ipslist := make([]string, max-min)
 	for i := min; i <= max; i++ {
 		ipslist = append(ipslist, tools.Int2ip(int32(i)))
 	}
-
-	res := icmp_scan.Icmp_scan2(ipslist)
+	var res []string
+	if isping {
+		res = ping_scan.CmdPing(ipslist)
+	} else {
+		res = icmp_scan.Icmp_scan2(ipslist)
+	}
 	fmt.Println(res)
 	fmt.Println(len(res))
 
-
-	}
-
-	// ip := "101.43.140.240"
-	// laddr := get_self(ip)
-	// fmt.Println(laddr)
-	// port_scan.Raw_socket_scan(laddr, ip)
 }
+
+// ip := "101.43.140.240"
+// laddr := get_self(ip)
+// fmt.Println(laddr)
+// port_scan.Raw_socket_scan(laddr, ip)
 
 // 172.17.1.202 -> [22 2027 1062 1061 3306 5355 80 8829 8830 2026 8839 40171]
