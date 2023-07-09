@@ -3,6 +3,7 @@ package ping_scan
 import (
 	"bytes"
 	"fmt"
+	"go_scanner/global"
 	"os/exec"
 	"runtime"
 	"strings"
@@ -10,11 +11,9 @@ import (
 	"time"
 )
 
-var alive_list []string
-
 // var mu sync.Mutex
 
-func CmdPing(ipslist []string) []string {
+func CmdPing(ipslist []string) {
 	OS := runtime.GOOS
 	var wg sync.WaitGroup
 	rate := 1000
@@ -29,32 +28,11 @@ func CmdPing(ipslist []string) []string {
 		}(ip)
 	}
 	wg.Wait()
-	return alive_list
 }
-
-// func wping() {
-// 	// 设置要扫描的 IP 地址范围
-// 	ipRange := "172.17.1."
-
-// 	// 创建一个 WaitGroup，用于等待所有 Ping 测试的 goroutine 执行完毕
-// 	var wg sync.WaitGroup
-// 	wg.Add(255)
-
-// 	// 遍历 IP 地址范围，启动 Ping 测试的 goroutine
-// 	for i := 1; i <= 255; i++ {
-// 		ip := ipRange + fmt.Sprintf("%d", i)
-// 		go func(ip string) {
-// 			ping(ip)
-// 			wg.Done() // 每个 goroutine 执行完毕后递减计数器
-// 		}(ip)
-// 	}
-
-// 	// 等待所有 goroutine 执行完毕
-// 	wg.Wait()
-// }
 
 func ping(ip, bsenv string) {
 	var cmd *exec.Cmd
+
 	if bsenv == "windows" {
 		cmd = exec.Command("cmd", "/c", "ping -c 1 -w 1 "+ip+">/dev/null && echo true || echo false")
 	} else if bsenv == "linux" {
@@ -79,8 +57,9 @@ func ping(ip, bsenv string) {
 	} else {
 		if strings.Contains(stdout.String(), "true") {
 			fmt.Println(ip, "\t is alive")
-			alive_list = append(alive_list, ip)
+			global.Alive_list = append(global.Alive_list, ip)
 		}
+
 	}
 
 }

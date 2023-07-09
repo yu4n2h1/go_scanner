@@ -44,6 +44,7 @@ func Socket_scan(ip string) {
 
 	go func() {
 		for alive := range alive_chan {
+			// global.Alive_port[ip] = append(global.Alive_port[ip], alive)
 			alive_prot = append(alive_prot, alive)
 			sub_wg.Done()
 		}

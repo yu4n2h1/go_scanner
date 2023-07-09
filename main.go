@@ -8,6 +8,7 @@ import (
 	"go_scanner/ping_scan"
 	"go_scanner/port_scan"
 	"go_scanner/tools"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -34,18 +35,23 @@ func main() {
 	for i := min; i <= max; i++ {
 		ipslist = append(ipslist, tools.Int2ip(int32(i)))
 	}
-	var res []string
+	// var res []string
 	if isping {
-		res = ping_scan.CmdPing(ipslist)
+		ping_scan.CmdPing(ipslist)
 	} else {
-		res = icmp_scan.Icmp_scan2(ipslist)
+		icmp_scan.Icmp_scan2(ipslist)
 	}
-	fmt.Println(res)
-	fmt.Println(len(res))
+	sort.Slice(global.Alive_list, func(i, j int) bool {
+		return tools.Ip2int(global.Alive_list[j]) > tools.Ip2int(global.Alive_list[i])
+	})
+	fmt.Println(global.Alive_list)
+	fmt.Println(len(global.Alive_list))
 
-	for _, ip := range res {
+	for _, ip := range global.Alive_list {
 		port_scan.Socket_scan(ip)
+		// fmt.Println(global.Alive_port[ip])S
 	}
+
 }
 
 // ip := "101.43.140.240"
