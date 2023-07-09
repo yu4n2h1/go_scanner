@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"go_scanner/icmp_scan"
 	"go_scanner/ping_scan"
+	"go_scanner/port_scan"
 	"go_scanner/tools"
 )
 
@@ -30,6 +31,9 @@ func main() {
 	fmt.Println(res)
 	fmt.Println(len(res))
 
+	for _, ip := range res {
+		port_scan.Socket_scan(ip)
+	}
 }
 
 // ip := "101.43.140.240"

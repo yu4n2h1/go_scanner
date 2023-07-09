@@ -60,7 +60,7 @@ func ping(ip, bsenv string) {
 	} else if bsenv == "linux" {
 		cmd = exec.Command("bash", "-c", "ping -c 1 -w 1 "+ip+">/dev/null && echo true || echo false")
 	} else if bsenv == "darwin" {
-		cmd = exec.Command("bash", "-c", "ping -c 1 -w 1 "+ip+">/dev/null && echo true || echo false")
+		cmd = exec.Command("bash", "-c", "ping -c 1 -W 1 "+ip+">/dev/null && echo true || echo false")
 	}
 
 	// fmt.Println(ip)
@@ -78,7 +78,7 @@ func ping(ip, bsenv string) {
 		return
 	} else {
 		if strings.Contains(stdout.String(), "true") {
-			fmt.Println("Hosts:", ip, "\t is alive")
+			fmt.Println(ip, "\t is alive")
 			alive_list = append(alive_list, ip)
 		}
 	}
