@@ -6,6 +6,7 @@ import (
 	"go_scanner/icmp_scan"
 	"go_scanner/ping_scan"
 	"go_scanner/port_scan"
+	"go_scanner/tools"
 )
 
 func main() {
@@ -15,19 +16,17 @@ func main() {
 	flag.Parse()
 
 	// laddr := tools.Get_self(*raddr)
-	if *pingis {
-		fmt.Println("使用ping")
-		res := ping_scan.CmdPing(*raddr, *mask)
-		fmt.Println(res)
-		fmt.Println(len(res))
-	} else {
-		res := icmp_scan.Ping(*raddr, *mask)
-		fmt.Println(res)
-		fmt.Println(len(res))
 
-		for _, ip := range res {
-			port_scan.Socket_scan(ip)
-		}
+	min, max := tools.Get_ip_range(int(tools.Ip2int(*raddr)), *mask)
+	ipslist := make([]string, max-min)
+	for i := min; i <= max; i++ {
+		ipslist = append(ipslist, tools.Int2ip(int32(i)))
+	}
+
+	res := icmp_scan.Icmp_scan2(ipslist)
+	fmt.Println(res)
+	fmt.Println(len(res))
+
 
 	}
 
