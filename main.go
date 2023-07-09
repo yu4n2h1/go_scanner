@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"go_scanner/icmp_scan"
 	"go_scanner/port_scan"
+	"go_scanner/tools"
 )
 
 func main() {
@@ -13,8 +14,13 @@ func main() {
 	flag.Parse()
 
 	// laddr := tools.Get_self(*raddr)
+	min, max := tools.Get_ip_range(int(tools.Ip2int(*raddr)), *mask)
+	ipslist := make([]string, max-min)
+	for i := min; i <= max; i++ {
+		ipslist = append(ipslist, tools.Int2ip(int32(i)))
+	}
 
-	res := icmp_scan.Ping(*raddr, *mask)
+	res := icmp_scan.Icmp_scan2(ipslist)
 	fmt.Println(res)
 	fmt.Println(len(res))
 
