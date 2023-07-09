@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"os/exec"
+	"runtime"
 	"strings"
 	"sync"
 	"time"
@@ -14,6 +15,7 @@ var alive_list []string
 // var mu sync.Mutex
 
 func CmdPing(ipslist []string) []string {
+	OS := runtime.GOOS
 	var wg sync.WaitGroup
 	rate := 1000
 	rateLimit := time.Tick(time.Second / time.Duration(rate))
@@ -23,7 +25,7 @@ func CmdPing(ipslist []string) []string {
 			<-rateLimit
 			defer wg.Done()
 			addr := ip
-			ping(addr)
+			ping(addr, OS)
 		}(ip)
 	}
 	wg.Wait()
@@ -51,9 +53,17 @@ func CmdPing(ipslist []string) []string {
 // 	wg.Wait()
 // }
 
-func ping(ip string) {
+func ping(ip, bsenv string) {
+	var cmd *exec.Cmd
+	if bsenv == "windows" {
+		cmd = exec.Command("cmd", "/c", "ping -c 1 -w 1 "+ip+">/dev/null && echo true || echo false")
+	} else if bsenv == "linux" {
+		cmd = exec.Command("bash", "-c", "ping -c 1 -w 1 "+ip+">/dev/null && echo true || echo false")
+	} else if bsenv == "darwin" {
+		cmd = exec.Command("bash", "-c", "ping -c 1 -w 1 "+ip+">/dev/null && echo true || echo false")
+	}
+
 	// fmt.Println(ip)
-	cmd := exec.Command("/bin/bash", "-c", "ping -c 1 -w -W 100 "+ip+">/dev/null && echo true || echo false")
 	var stdout, stderr bytes.Buffer
 	// output := bytes.Buffer{}
 	cmd.Stdout = &stdout
