@@ -1,0 +1,10 @@
+[
+    {
+        "name":"ssh",
+        "feature":"SSH"
+    },
+    {
+        "name":"web",
+        "feature":"HTTP/"
+    }
+]

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"go_scanner/global"
 	"go_scanner/icmp_scan"
+	"go_scanner/info_scan"
 	"go_scanner/ping_scan"
 	"go_scanner/port_scan"
 	"go_scanner/tools"
@@ -57,6 +58,7 @@ func main() {
 	for _, ip := range global.Alive_list {
 		port_scan.Socket_scan(ip)
 		fmt.Println(ip, "\t->\t", global.Alive_port[ip])
+		info_scan.InfoScan(ip, global.Alive_port[ip])
 	}
 
 }
