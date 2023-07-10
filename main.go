@@ -16,13 +16,17 @@ import (
 func main() {
 	global.CIDR = flag.String("h", "127.0.0.1/32", "Scan IP addresses based on input in CIDR notation.")
 
-	// raddr := flag.String("i", "127.0.0.1", "Input the ip address you want to scan")
-	// mask := flag.Int("m", 31, "Input the mask of target network")
 	pingis := flag.Bool("ping", false, "Input the ping ro not")
 	flag.Parse()
-	args := strings.Split(*global.CIDR, "/")
-	raddr := args[0]
-	mask, err := strconv.Atoi(args[1])
+	var err error
+	if strings.Contains(*global.CIDR, "/") {
+		args := strings.Split(*global.CIDR, "/")
+		global.Raddr = args[0]
+		global.Mask, err = strconv.Atoi(args[1])
+	} else {
+		global.Mask = 32
+		global.Raddr = *global.CIDR
+	}
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -30,7 +34,7 @@ func main() {
 
 	// laddr := tools.Get_self(*raddr)
 	var isping bool = *pingis
-	min, max := tools.Get_ip_range(int(tools.Ip2int(raddr)), mask)
+	min, max := tools.Get_ip_range(int(tools.Ip2int(global.Raddr)), global.Mask)
 	ipslist := make([]string, max-min)
 	for i := min; i <= max; i++ {
 		ipslist = append(ipslist, tools.Int2ip(int32(i)))
@@ -46,10 +50,13 @@ func main() {
 	})
 	fmt.Println(global.Alive_list)
 	fmt.Println(len(global.Alive_list))
-
+	// create map ip
+	// for _,ip := range global.Alive_list{
+	// global.Alive_port[ip] =
+	// }
 	for _, ip := range global.Alive_list {
 		port_scan.Socket_scan(ip)
-		// fmt.Println(global.Alive_port[ip])S
+		fmt.Println(ip, "\t->\t", global.Alive_port[ip])
 	}
 
 }
