@@ -93,6 +93,6 @@ func Get_ip_range(ip, mask int) (int, int) {
 	tmp_mask := ((1 << mask) - 1) << (32 - mask)
 	// fmt.Printf("%x\n", tmp_mask)
 	min_ip := ip & tmp_mask
-	max_ip := min_ip + (^tmp_mask & 0xffffffff)
+	max_ip := min_ip + (^tmp_mask & 0xffffffff) + 1
 	return min_ip, max_ip
 }
