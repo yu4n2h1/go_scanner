@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"regexp"
 	"strings"
 )
 
@@ -18,7 +19,12 @@ func WebInfoJudge(ip string, port int) (string, error) {
 	}
 
 	for _, webrule := range webrules {
-		if strings.Contains(strings.ToLower(response), strings.ToLower(webrule.Feature)) {
+		matched, err := regexp.MatchString("(?i)"+webrule.Feature, response)
+		if err != nil {
+			return "", fmt.Errorf("发生错误: %w", err)
+		}
+
+		if matched {
 			return webrule.Name, nil
 		}
 	}
