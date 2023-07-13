@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net"
-	"strings"
+	"regexp"
 	"time"
 )
 
@@ -57,11 +57,14 @@ func ServiceJudge(ip string, port int) (string, error) {
 	}
 
 	for _, service := range services {
-		if strings.Contains(strings.ToLower(response), strings.ToLower(service.Feature)) {
+		matched, err := regexp.MatchString("(?i)"+service.Feature, response)
+		if err != nil {
+			return "", fmt.Errorf("发生错误: %w", err)
+		}
+		if matched {
 			return service.Name, nil
 		}
 	}
-
 	return "规则未命中", nil
 }
 
