@@ -3,6 +3,9 @@ package tools
 import (
 	"bytes"
 	"encoding/binary"
+	"flag"
+	"fmt"
+	"go_scanner/global"
 	"net"
 	"strconv"
 	"strings"
@@ -10,6 +13,32 @@ import (
 	"github.com/google/gopacket/routing"
 )
 
+func Parse_flag() {
+	global.CIDR = flag.String("h", "127.0.0.1/32", "Scan IP addresses based on input in CIDR notation.")
+	global.Pingis = flag.Bool("ping", false, "Input the ping ro not")
+	flag.Parse()
+}
+func Parse_IP() []string {
+	var err error
+	if strings.Contains(*global.CIDR, "/") {
+		args := strings.Split(*global.CIDR, "/")
+		global.Raddr = args[0]
+		global.Mask, err = strconv.Atoi(args[1])
+	} else {
+		global.Mask = 32
+		global.Raddr = *global.CIDR
+	}
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	min, max := Get_ip_range(int(Ip2int(global.Raddr)), global.Mask)
+	ipslist := make([]string, max-min)
+	for i := min; i <= max; i++ {
+		ipslist = append(ipslist, Int2ip(int32(i)))
+	}
+	return ipslist
+}
 func Get_self(raddr string) string {
 	ip := net.ParseIP(raddr)
 	router, err := routing.New()

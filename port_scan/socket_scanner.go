@@ -52,11 +52,14 @@ func Socket_scan(ip string) {
 		}
 	}()
 
-	for i := 0; i <= 65535; i++ {
+	for i := 0; i <= 1024; i++ {
 		wg.Add(1)
 		port_chan <- i
 	}
-
+	for _, i := range global.Default_port {
+		wg.Add(1)
+		port_chan <- i
+	}
 	close(port_chan)
 
 	wg.Wait()
