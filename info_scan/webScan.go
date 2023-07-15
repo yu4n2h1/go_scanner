@@ -25,6 +25,8 @@ func WebInfoJudge(ip string, port int) (string, error) {
 		}
 
 		if matched {
+			// Add honeypot detection feature
+			fmt.Print(response)
 			return webrule.Name, nil
 		}
 	}

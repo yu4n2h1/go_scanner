@@ -3,9 +3,11 @@ package info_scan
 import (
 	"encoding/json"
 	"fmt"
+	"go_scanner/honeypot_ident"
 	"io/ioutil"
 	"net"
 	"regexp"
+	"strings"
 	"time"
 )
 
@@ -62,6 +64,12 @@ func ServiceJudge(ip string, port int) (string, error) {
 			return "", fmt.Errorf("发生错误: %w", err)
 		}
 		if matched {
+			if strings.Contains(service.Name, "ssh") {
+				// honeypot_ident.DetectKippo()
+				if honeypot_ident.DetectKippo(ip, port) {
+					fmt.Println(service.Name, "may is Kippo")
+				}
+			}
 			return service.Name, nil
 		}
 	}
