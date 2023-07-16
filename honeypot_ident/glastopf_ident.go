@@ -41,9 +41,13 @@ func DetectGlastopf(ip string, port int) bool {
 	if err != nil {
 		panic(err)
 	}
+	if strings.Contains(response, "<h2>Blog Comments</h2>") && strings.Contains(response, "Please post your comments for the blog") {
+		score += 2
+		fmt.Println("this glastopf isn't change")
+	}
 	for _, sign := range signs {
 		if strings.Contains(response, sign) {
-			score += 2
+			score += 3
 			break
 		}
 	}
@@ -53,8 +57,8 @@ func DetectGlastopf(ip string, port int) bool {
 	return false
 }
 
-func get_request_text(ip string, port int, playload string) (string, error) {
-	var url string = fmt.Sprintf("http://%s:%d/"+playload, ip, port)
+func get_request_text(ip string, port int, payload string) (string, error) {
+	var url string = fmt.Sprintf("http://%s:%d/"+payload, ip, port)
 
 	resp, err := http.Get(url)
 	if err != nil {
