@@ -2,6 +2,7 @@ package info_scan
 
 import (
 	"fmt"
+	"go_scanner/honeypot_ident"
 	"io/ioutil"
 	"net/http"
 	"regexp"
@@ -27,8 +28,14 @@ func WebInfoJudge(ip string, port int) (string, error) {
 		if matched {
 			// Add honeypot detection feature
 			fmt.Print(response)
+			if honeypot_ident.DetectGlastopf(ip, port) {
+				fmt.Println(ip, port, "may has a glastopf")
+			}
 			return webrule.Name, nil
 		}
+	}
+	if honeypot_ident.DetectGlastopf(ip, port) {
+		fmt.Println(ip, port, "may has a glastopf")
 	}
 	return "规则未命中", nil
 }
