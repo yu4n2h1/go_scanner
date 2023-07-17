@@ -72,8 +72,8 @@ func startJudge(ip string, port int) {
 		response, err := sendProbeData(ip, port, probename)
 		// fmt.Println(response)
 		if err != nil {
-			fmt.Println("无法连接到端口:", err)
-			fmt.Println("----------------")
+			// fmt.Println("无法连接到端口:", err)
+			// fmt.Println("----------------")
 			continue
 		}
 
@@ -91,7 +91,7 @@ func startJudge(ip string, port int) {
 				versionInfo := match.VersionInfo
 				version := getVersionValue(versionInfo.Version, matches.Groups())
 				vendorProductName := getVersionValue(versionInfo.VendorProductName, matches.Groups())
-				fmt.Println("匹配成功:")
+				fmt.Println("Matched:")
 				fmt.Println("Name:", name)
 				fmt.Println("Operating System:", operatingSystem)
 				fmt.Println("Vendor Product Name:", vendorProductName)
