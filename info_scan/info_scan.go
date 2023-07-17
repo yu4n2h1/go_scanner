@@ -62,6 +62,7 @@ func InfoScan(ip string, ports []int) {
 		wg.Add(1)
 		// startJudge(ip, port)
 	}
+	wg.Wait()
 }
 
 func startJudge(ip string, port int) {
