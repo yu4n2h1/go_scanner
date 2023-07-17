@@ -105,7 +105,6 @@ func startJudge(ip string, port int) {
 				for _, match := range matches {
 					pattern := match.Pattern
 					name := match.Name
-					operatingSystem := match.VersionInfo.OperatingSystem
 					// vendorProductName := match.VersionInfo.VendorProductName
 					// re, err := regexp.Compile(pattern)
 					re := regexp2.MustCompile(pattern, 0)
@@ -113,10 +112,15 @@ func startJudge(ip string, port int) {
 					// matches := re.FindStringSubmatch(response)
 					if matches != nil {
 						versionInfo := match.VersionInfo
-						version := getVersionValue(versionInfo.Version, matches.Groups())
-						vendorProductName := getVersionValue(versionInfo.VendorProductName, matches.Groups())
+						operatingSystem := versionInfo.OperatingSystem
+						deviceType := versionInfo.DeviceType
+						Info := parseQuote(versionInfo.Info, matches.Groups())
+						version := parseQuote(versionInfo.Version, matches.Groups())
+						vendorProductName := parseQuote(versionInfo.VendorProductName, matches.Groups())
 						fmt.Println(ip + ":" + strconv.Itoa(port) + " Matched:")
 						fmt.Println("Name:", name)
+						fmt.Println("Device Type:", deviceType)
+						fmt.Println("Info:", Info)
 						fmt.Println("Operating System:", operatingSystem)
 						fmt.Println("Vendor Product Name:", vendorProductName)
 						fmt.Println("Version:", version)
@@ -168,10 +172,13 @@ func sendProbeData(ip string, port int, probename string) (string, error) {
 	return response, nil
 }
 
-func getVersionValue(version string, matches []regexp2.Group) string {
-	for i := 1; i < len(matches); i++ {
-		placeholder := fmt.Sprintf("$%d", i)
-		version = replaceAll(version, placeholder, matches[i].Captures[0].String())
+func parseQuote(version string, matches []regexp2.Group) string {
+	reg := regexp.MustCompile("\\$(\\d+)")
+	res := reg.FindAllStringSubmatch(version, -1)
+	for i := 0; i < len(res); i++ {
+		placeholder := res[i][0]
+		idx, _ := strconv.Atoi(res[i][1])
+		version = replaceAll(version, placeholder, matches[idx].Captures[0].String())
 	}
 	return version
 }
