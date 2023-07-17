@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-var alive_port []int = make([]int, 65535)
+var alive_port []int
 
 func socket_conn(port int, ip string, wg *sync.WaitGroup) bool {
 	wg.Add(1)
@@ -67,5 +67,6 @@ func Socket_scan(ip string) []int {
 	wg.Wait()
 	close(alive_chan)
 	// fmt.Println(ip, "->", global.Alive_port[ip])
+	fmt.Println(alive_port)
 	return alive_port
 }
