@@ -7,51 +7,40 @@ import (
 	"strings"
 )
 
+type glastopf_finger struct {
+	payload string
+	finger  []string
+}
+
+var finger_data []glastopf_finger = []glastopf_finger{
+	{"?../etc/passwd", []string{"root"}},
+	{"?../etc/shadow", []string{"root"}},
+	{"?../etc/group", []string{"root", "daemon"}},
+	{"?../etc/hosts", []string{"127.0.0.1"}},
+	{"", []string{"<h2>Blog Comments</h2>", "perlshop.cgi", "info.php", "Footer Powered By", "This is a really great entry"}},
+	{"?../etc/services", []string{"exec", "root", "shell", "login"}},
+}
+
 func DetectGlastopf(ip string, port int) bool {
 	var err error
-	var score int = 0
 	var response string
-	var reserror string = ".:/usr/share/pear:/usr/share/php"
-	var signs [4]string = [4]string{"perlshop.cgi", "info.php", "Footer Powered By", "This is a really great entry"}
-	response, err = get_request_text(ip, port, "?../etc/passwd")
-	if err != nil {
-		panic(err)
-	}
-	if strings.Contains(response, reserror) || strings.Contains(response, "root") {
-		score += 1
-	}
-
-	response, err = get_request_text(ip, port, "?../etc/shadow")
-	if err != nil {
-		panic(err)
-	}
-	if strings.Contains(response, reserror) || strings.Contains(response, "root") {
-		score += 2
-	}
-
-	response, err = get_request_text(ip, port, "?../etc/group")
-	if err != nil {
-		panic(err)
-	}
-	if strings.Contains(response, reserror) || (strings.Contains(response, "root") || strings.Contains(response, "daemon")) {
-		score += 1
-	}
-
-	response, err = get_request_text(ip, port, "")
-	if err != nil {
-		panic(err)
-	}
-	if strings.Contains(response, "<h2>Blog Comments</h2>") && strings.Contains(response, "Please post your comments for the blog") {
-		score += 2
-		fmt.Println("this glastopf isn't change")
-	}
-	for _, sign := range signs {
-		if strings.Contains(response, sign) {
-			score += 3
-			break
+	var score, unscore int = 0, 0
+	for _, finger := range finger_data {
+		response, err = get_request_text(ip, port, *&finger.payload)
+		if err != nil {
+			panic(err)
+		}
+		for idx := range *&finger.finger {
+			if strings.Contains(response, *&finger.finger[idx]) {
+				score += 1
+				break
+			}
+		}
+		if strings.Contains(response, ".:/usr/share/pear:/usr/share/php") {
+			unscore += 1
 		}
 	}
-	if score >= 3 {
+	if unscore > 1 && score > 1 {
 		return true
 	}
 	return false
