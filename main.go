@@ -8,6 +8,7 @@ import (
 	"go_scanner/ping_scan"
 	"go_scanner/port_scan"
 	"go_scanner/tools"
+	"strconv"
 
 	"sort"
 )
@@ -30,8 +31,19 @@ func main() {
 	fmt.Println(len(global.Alive_list))
 	for _, ip := range global.Alive_list {
 		global.Alive_port[ip] = tools.UniqueSlice(port_scan.Socket_scan(ip))
+		global.Ident_server[ip] = make(map[int][6]string)
 		fmt.Println(ip, "\t->\t", global.Alive_port[ip])
 		info_scan.InfoScan(ip, global.Alive_port[ip])
+	}
+
+	for _, ip := range global.Alive_list {
+		for _, port := range global.Alive_port[ip] {
+			fmt.Println(ip + ":" + strconv.Itoa(port) + " Matched:")
+			for i := 0; i < 6; i++ {
+				fmt.Println(global.Title[i], global.Ident_server[ip][port][i])
+			}
+			fmt.Println("----------------")
+		}
 	}
 
 }
