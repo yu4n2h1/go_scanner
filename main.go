@@ -29,8 +29,7 @@ func main() {
 	fmt.Println(global.Alive_list)
 	fmt.Println(len(global.Alive_list))
 	for _, ip := range global.Alive_list {
-		port_scan.Socket_scan(ip)
-		global.Alive_port[ip] = tools.UniqueSlice(global.Alive_port[ip])
+		global.Alive_port[ip] = tools.UniqueSlice(port_scan.Socket_scan(ip))
 		fmt.Println(ip, "\t->\t", global.Alive_port[ip])
 		info_scan.InfoScan(ip, global.Alive_port[ip])
 	}

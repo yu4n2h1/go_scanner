@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+var alive_port []int
+
 func socket_conn(port int, ip string, wg *sync.WaitGroup) bool {
 	wg.Add(1)
 	d := &net.Dialer{Timeout: time.Duration(3) * time.Second}
@@ -24,7 +26,7 @@ func socket_conn(port int, ip string, wg *sync.WaitGroup) bool {
 
 }
 
-func Socket_scan(ip string) {
+func Socket_scan(ip string) []int {
 	// var alive_prot []int
 	var wg sync.WaitGroup
 	var sub_wg sync.WaitGroup
@@ -46,7 +48,7 @@ func Socket_scan(ip string) {
 	go func() {
 		for alive := range alive_chan {
 
-			global.Alive_port[ip] = append(global.Alive_port[ip], alive)
+			alive_port = append(alive_port, alive)
 			// alive_prot = append(alive_prot, alive)
 			sub_wg.Done()
 		}
@@ -65,5 +67,6 @@ func Socket_scan(ip string) {
 	wg.Wait()
 	close(alive_chan)
 	// fmt.Println(ip, "->", global.Alive_port[ip])
-
+	fmt.Println(alive_port)
+	return alive_port
 }
