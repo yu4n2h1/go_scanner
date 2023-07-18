@@ -45,7 +45,7 @@ func Hfish_ident(ip string) bool {
 		resp, err := http.Get(url)
 		if err != nil {
 			url := fmt.Sprintf("https://%s:%d", ip, port)
-			resp, err := http.Get(url)
+			resp, err = http.Get(url)
 			if err != nil {
 				panic(err)
 			}
