@@ -1,7 +1,6 @@
 package honeypot_ident
 
 import (
-	"fmt"
 	"go_scanner/global"
 	"strconv"
 	"strings"
@@ -20,7 +19,7 @@ func Honeypot_ident(ip string) {
 
 	if len(sshports) >= 2 {
 		for _, port := range sshports {
-			fmt.Println(strconv.Itoa(port) + "start!!!")
+			// fmt.Println(strconv.Itoa(port) + "start!!!")
 			wg.Add(1)
 			go func(port int) {
 				defer wg.Done()
@@ -29,7 +28,7 @@ func Honeypot_ident(ip string) {
 					global.Net_info[ip].Honeypot = append(global.Net_info[ip].Honeypot, strconv.Itoa(port)+"/"+"kippo")
 					mutex.Unlock()
 				}
-				fmt.Println(strconv.Itoa(port) + "finish!!!")
+				// fmt.Println(strconv.Itoa(port) + "finish!!!")
 
 			}(port)
 		}

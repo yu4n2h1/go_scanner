@@ -34,7 +34,7 @@ func Hfish_ident(ip string) (bool, []int) {
 		wg.Add(1)
 		go func(port int) {
 
-			fmt.Println(port, !strings.Contains(global.Ident_server[ip][port][0], "http"))
+			// fmt.Println(port, !strings.Contains(global.Ident_server[ip][port][0], "http"))
 
 			if !strings.Contains(global.Ident_server[ip][port][0], "http") {
 				wg.Done()

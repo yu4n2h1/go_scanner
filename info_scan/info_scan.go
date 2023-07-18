@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"go_scanner/global"
+	"go_scanner/tools"
 	"io/ioutil"
 	"net"
 	"regexp"
@@ -134,7 +135,13 @@ func startJudge(ip string, port int) {
 						// global.Ident_server[ip][port] = []string{name, deviceType, Info, operatingSystem, vendorProductName, version}
 						var p_s = global.Port_service{port, name, service_app}
 						mutex.Lock()
-						global.Net_info[ip].Service = append(global.Net_info[ip].Service, p_s)
+						if tools.IsPortIn(ip, port) {
+							tmp := append(tools.FindPortIn(ip, port).Service_app, service_app...)
+							a := &(tools.FindPortIn(ip, port).Service_app)
+							*a = tmp
+						} else {
+							global.Net_info[ip].Service = append(global.Net_info[ip].Service, p_s)
+						}
 						global.Net_info[ip].Deviceinfo = append(global.Net_info[ip].Deviceinfo, deviceType)
 						mutex.Unlock()
 					}
@@ -615,6 +622,6 @@ func FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, ve
 		}
 	}
 
-	fmt.Println(service_app_list)
+	// fmt.Println(service_app_list)
 	return service_app_list
 }

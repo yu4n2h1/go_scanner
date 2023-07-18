@@ -5037,7 +5037,7 @@
                 }
             },
             {
-                "pattern": "[\\w\\W]*[Ww]ord[Pp]ress\\s+(\\d\\.\\d)[\\w\\W]*",
+                "pattern": "[\\w\\W]*wp-admin[\\w\\W]*",
                 "name": "http",
                 "pattern_flag": "",
                 "versioninfo": {
@@ -5047,7 +5047,7 @@
                     "info": "",
                     "operatingsystem": "",
                     "vendorproductname": "wordpress",
-                    "version": "$1"
+                    "version": ""
                 }
             },
             {

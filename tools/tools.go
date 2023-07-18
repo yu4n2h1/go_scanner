@@ -192,3 +192,20 @@ func UniqueSlice(slice []int) []int {
 	}
 	return result
 }
+func IsPortIn(ip string, port int) bool {
+	for _, s := range global.Net_info[ip].Service {
+		if port == s.Port {
+			return true
+		}
+	}
+	return false
+}
+func FindPortIn(ip string, port int) *global.Port_service {
+	length := len(global.Net_info[ip].Service)
+	for i := 0; i < length; i++ {
+		if global.Net_info[ip].Service[i].Port == port {
+			return &global.Net_info[ip].Service[i]
+		}
+	}
+	return nil
+}

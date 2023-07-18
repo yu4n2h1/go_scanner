@@ -29,7 +29,7 @@ func DetectGlastopf(ip string, port int) bool {
 	for _, finger := range finger_data {
 		response, err = Get_request_text(ip, port, *&finger.payload)
 		if err != nil {
-			panic(err)
+			return false
 		}
 		for idx := range *&finger.finger {
 			if strings.Contains(response, *&finger.finger[idx]) {
@@ -57,7 +57,7 @@ func Get_request_text(ip string, port int, payload string) (string, error) {
 		url = fmt.Sprintf("https://%s:%d/"+payload, ip, port)
 		resp, err = client.Get(url)
 		if err != nil {
-			panic(err)
+			return "", fmt.Errorf("Failed : %w", err)
 		}
 	}
 	defer resp.Body.Close()
