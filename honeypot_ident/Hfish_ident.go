@@ -41,7 +41,7 @@ func Hfish_ident(ip string) bool {
 	}
 	for port := range global.Alive_port[ip] {
 
-		url := fmt.Sprintf("https://%s:%d", ip, port)
+		url := fmt.Sprintf("http://%s:%d", ip, port)
 		resp, err := http.Get(url)
 		if err != nil {
 			url := fmt.Sprintf("https://%s:%d", ip, port)
