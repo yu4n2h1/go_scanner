@@ -3,6 +3,7 @@ package info_scan
 import (
 	"encoding/json"
 	"fmt"
+	"go_scanner/global"
 	"io/ioutil"
 	"net"
 	"regexp"
@@ -118,14 +119,7 @@ func startJudge(ip string, port int) {
 						Info := parseQuote(versionInfo.Info, matches.Groups())
 						version := parseQuote(versionInfo.Version, matches.Groups())
 						vendorProductName := parseQuote(versionInfo.VendorProductName, matches.Groups())
-						fmt.Println(ip + ":" + strconv.Itoa(port) + " Matched:")
-						fmt.Println("Name:", name)
-						fmt.Println("Device Type:", deviceType)
-						fmt.Println("Info:", Info)
-						fmt.Println("Operating System:", operatingSystem)
-						fmt.Println("Vendor Product Name:", vendorProductName)
-						fmt.Println("Version:", version)
-						fmt.Println("----------------")
+						global.Ident_server[ip][port] = [6]string{name, deviceType, Info, operatingSystem, vendorProductName, version}
 					}
 				}
 				wg.Done()
