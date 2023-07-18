@@ -70,6 +70,10 @@ func InfoScan(ip string, ports []int) {
 
 func startJudge(ip string, port int) {
 	// 读取 JSON 数据文件
+	if port == 443 {
+		global.Ident_server[ip][port] = [6]string{"https", "", "", "", "", ""}
+		return
+	}
 	jsonData, err := ioutil.ReadFile("info_scan/finger.json")
 	if err != nil {
 		fmt.Println("无法读取 JSON 数据文件:", err)
@@ -87,22 +91,29 @@ func startJudge(ip string, port int) {
 	thread_num := 11
 	var wg sync.WaitGroup
 	json_chan := make(chan JSONData, 11)
+	http_isset := 0
+	var mutex sync.Mutex
 	// stop_chan := make(chan uint8, 1)
 
 	for i := 0; i < thread_num; i++ {
 		go func() {
 			for data := range json_chan {
-				probename := data.Probename
+				// probename := data.Probename
 				matches := data.Matches
 				probestring := data.Probestring
 				// 向指定的端口发送 probename 数据
 				response, err := sendProbeData(ip, port, decodeJsonData(probestring))
 				// fmt.Println(response)
-				if err != nil && probename == "GetRequest" {
+				if err != nil {
 					wg.Done()
 					continue
 				}
-
+				mutex.Lock()
+				if len(response) > 6 && response[:6] == "HTTP/1" && http_isset == 0 {
+					global.Ident_server[ip][port] = [6]string{"http", "", "", "", "", ""}
+					http_isset = 1
+				}
+				mutex.Unlock()
 				// 判断返回数据是否与匹配模式相匹配
 				for _, match := range matches {
 					pattern := match.Pattern
