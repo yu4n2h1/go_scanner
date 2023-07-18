@@ -26,7 +26,7 @@ func DetectGlastopf(ip string, port int) bool {
 	var response string
 	var score, unscore int = 0, 0
 	for _, finger := range finger_data {
-		response, err = get_request_text(ip, port, *&finger.payload)
+		response, err = Get_request_text(ip, port, *&finger.payload)
 		if err != nil {
 			panic(err)
 		}
@@ -46,12 +46,16 @@ func DetectGlastopf(ip string, port int) bool {
 	return false
 }
 
-func get_request_text(ip string, port int, payload string) (string, error) {
+func Get_request_text(ip string, port int, payload string) (string, error) {
 	var url string = fmt.Sprintf("http://%s:%d/"+payload, ip, port)
 
 	resp, err := http.Get(url)
 	if err != nil {
-		return "", fmt.Errorf("Failed to request the website: %w", err)
+		url = fmt.Sprintf("https://%s:%d/"+payload, ip, port)
+		resp, err = http.Get(url)
+		if err != nil {
+			panic(err)
+		}
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
