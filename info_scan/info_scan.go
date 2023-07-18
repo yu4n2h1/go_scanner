@@ -279,7 +279,7 @@ func FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, ve
 	allResult := name + " " + deviceType + " " + Info + " " + operatingSystem + " " + vendorProductName + " " + version
 
 	//apache
-	apache_pattern := "(?i)apache(?: httpd)?\\s+([\\d.]+)"
+	apache_pattern := "(?i)apache(?: httpd)?\\s+([\\d.]+\\d)"
 	regex := regexp.MustCompile(apache_pattern)
 	match := regex.FindStringSubmatch(allResult)
 	if len(match) > 0 {
@@ -293,7 +293,7 @@ func FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, ve
 		}
 	}
 
-	ubuntu_pattern := "(?i)ubuntu\\s+([\\d.]+)"
+	ubuntu_pattern := "(?i)ubuntu\\s+([\\d.]+\\d)"
 	regex = regexp.MustCompile(ubuntu_pattern)
 	match = regex.FindStringSubmatch(allResult)
 	if len(match) > 0 {
@@ -307,7 +307,7 @@ func FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, ve
 		}
 	}
 
-	debian_pattern := "(?i)debian\\s+([\\d.]+)"
+	debian_pattern := "(?i)debian\\s+([\\d.]+\\d)"
 	regex = regexp.MustCompile(debian_pattern)
 	match = regex.FindStringSubmatch(allResult)
 	if len(match) > 0 {
@@ -321,7 +321,7 @@ func FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, ve
 		}
 	}
 
-	centos_pattern := "(?i)centos\\s+([\\d.]+)"
+	centos_pattern := "(?i)centos\\s+([\\d.]+\\d)"
 	regex = regexp.MustCompile(centos_pattern)
 	match = regex.FindStringSubmatch(allResult)
 	if len(match) > 0 {
@@ -335,7 +335,7 @@ func FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, ve
 		}
 	}
 
-	windows_pattern := "(?i)windows\\s+([\\d.]+)"
+	windows_pattern := "(?i)windows\\s+([\\d.]+\\d)"
 	regex = regexp.MustCompile(windows_pattern)
 	match = regex.FindStringSubmatch(allResult)
 	if len(match) > 0 {
@@ -349,7 +349,7 @@ func FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, ve
 		}
 	}
 
-	openssh_pattern := "(?i)openssh\\s+([\\d.]+)"
+	openssh_pattern := "(?i)openssh\\s+([\\d.]+\\d)"
 	regex = regexp.MustCompile(openssh_pattern)
 	match = regex.FindStringSubmatch(allResult)
 	if len(match) > 0 {
@@ -363,7 +363,7 @@ func FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, ve
 		}
 	}
 
-	openssl_pattern := "(?i)openssl\\s+([\\d.]+)"
+	openssl_pattern := "(?i)openssl\\s+([\\d.]+\\d)"
 	regex = regexp.MustCompile(openssl_pattern)
 	match = regex.FindStringSubmatch(allResult)
 	if len(match) > 0 {
@@ -377,7 +377,7 @@ func FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, ve
 		}
 	}
 
-	LiteSpeed_pattern := "(?i)LiteSpeed(?: httpd)?\\s+([\\d.]+)"
+	LiteSpeed_pattern := "(?i)LiteSpeed(?: httpd)?\\s+([\\d.]+\\d)"
 	regex = regexp.MustCompile(LiteSpeed_pattern)
 	match = regex.FindStringSubmatch(allResult)
 	if len(match) > 0 {
@@ -391,7 +391,7 @@ func FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, ve
 		}
 	}
 
-	Jetty_pattern := "(?i)Jetty\\s+([\\d.]+)"
+	Jetty_pattern := "(?i)Jetty\\s+([\\d.]+\\d)"
 	regex = regexp.MustCompile(Jetty_pattern)
 	match = regex.FindStringSubmatch(allResult)
 	if len(match) > 0 {
@@ -405,7 +405,7 @@ func FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, ve
 		}
 	}
 
-	java_pattern := "(?i)java\\s+([\\d.]+)"
+	java_pattern := "(?i)java\\s+([\\d.]+\\d)"
 	regex = regexp.MustCompile(java_pattern)
 	match = regex.FindStringSubmatch(allResult)
 	if len(match) > 0 {
@@ -419,7 +419,7 @@ func FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, ve
 		}
 	}
 
-	nodejs_pattern := "(?i)node\\.js(?: httpd)?\\s+([\\d.]+)"
+	nodejs_pattern := "(?i)node\\.js(?: httpd)?\\s+([\\d.]+\\d)"
 	regex = regexp.MustCompile(nodejs_pattern)
 	match = regex.FindStringSubmatch(allResult)
 	if len(match) > 0 {
@@ -433,7 +433,7 @@ func FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, ve
 		}
 	}
 
-	express_pattern := "(?i)express\\s+([\\d.]+)"
+	express_pattern := "(?i)express\\s+([\\d.]+\\d)"
 	regex = regexp.MustCompile(express_pattern)
 	match = regex.FindStringSubmatch(allResult)
 	if len(match) > 0 {
@@ -447,7 +447,7 @@ func FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, ve
 		}
 	}
 
-	asp_pattern := "(?i)asp.net\\s+([\\d.]+)"
+	asp_pattern := "(?i)asp.net\\s+([\\d.]+\\d)"
 	regex = regexp.MustCompile(asp_pattern)
 	match = regex.FindStringSubmatch(allResult)
 	if len(match) > 0 {
@@ -461,7 +461,7 @@ func FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, ve
 		}
 	}
 
-	php_pattern := "(?i)php\\s+([\\d.]+)"
+	php_pattern := "(?i)php\\s+([\\d.]+\\d)"
 	regex = regexp.MustCompile(php_pattern)
 	match = regex.FindStringSubmatch(allResult)
 	if len(match) > 0 {
@@ -475,7 +475,7 @@ func FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, ve
 		}
 	}
 
-	Microsoft_HTTPAPI_pattern := "(?i)Microsoft HTTPAPI httpd\\s+([\\d.]+)"
+	Microsoft_HTTPAPI_pattern := "(?i)Microsoft HTTPAPI httpd\\s+([\\d.]+\\d)"
 	regex = regexp.MustCompile(Microsoft_HTTPAPI_pattern)
 	match = regex.FindStringSubmatch(allResult)
 	if len(match) > 0 {
@@ -489,7 +489,7 @@ func FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, ve
 		}
 	}
 
-	RabbitMQ_pattern := "(?i)RabbitMQ\\s+([\\d.]+)"
+	RabbitMQ_pattern := "(?i)RabbitMQ\\s+([\\d.]+\\d)"
 	regex = regexp.MustCompile(RabbitMQ_pattern)
 	match = regex.FindStringSubmatch(allResult)
 	if len(match) > 0 {
@@ -503,7 +503,7 @@ func FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, ve
 		}
 	}
 
-	iis_pattern := "(?i)iis(?: httpd)?(?: ftpd)?(?: WebDAV)?\\s+([\\d.]+)"
+	iis_pattern := "(?i)iis(?: httpd)?(?: ftpd)?(?: WebDAV)?\\s+([\\d.]+\\d)"
 	regex = regexp.MustCompile(iis_pattern)
 	match = regex.FindStringSubmatch(allResult)
 	if len(match) > 0 {
@@ -517,7 +517,7 @@ func FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, ve
 		}
 	}
 
-	nginx_pattern := "(?i)nginx\\s+([\\d.]+)"
+	nginx_pattern := "(?i)nginx\\s+([\\d.]+\\d)"
 	regex = regexp.MustCompile(nginx_pattern)
 	match = regex.FindStringSubmatch(allResult)
 	if len(match) > 0 {
@@ -531,7 +531,7 @@ func FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, ve
 		}
 	}
 
-	micro_httpd_pattern := "(?i)micro_httpd\\s+([\\d.]+)"
+	micro_httpd_pattern := "(?i)micro_httpd\\s+([\\d.]+\\d)"
 	regex = regexp.MustCompile(micro_httpd_pattern)
 	match = regex.FindStringSubmatch(allResult)
 	if len(match) > 0 {
@@ -545,7 +545,7 @@ func FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, ve
 		}
 	}
 
-	openresty_pattern := "(?i)OpenResty web app server\\s+([\\d.]+)"
+	openresty_pattern := "(?i)OpenResty web app server\\s+([\\d.]+\\d)"
 	regex = regexp.MustCompile(openresty_pattern)
 	match = regex.FindStringSubmatch(allResult)
 	if len(match) > 0 {
@@ -559,7 +559,7 @@ func FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, ve
 		}
 	}
 
-	grafana_pattern := "(?i)grafana\\s+([\\d.]+)"
+	grafana_pattern := "(?i)grafana\\s+([\\d.]+\\d)"
 	regex = regexp.MustCompile(grafana_pattern)
 	match = regex.FindStringSubmatch(allResult)
 	if len(match) > 0 {
@@ -573,7 +573,7 @@ func FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, ve
 		}
 	}
 
-	Weblogic_pattern := "(?i)WebLogic(?: applications server)?(?: httpd)?(?: Server)?\\s+([\\d.]+)"
+	Weblogic_pattern := "(?i)WebLogic(?: applications server)?(?: httpd)?(?: Server)?\\s+([\\d.]+\\d)"
 	regex = regexp.MustCompile(Weblogic_pattern)
 	match = regex.FindStringSubmatch(allResult)
 	if len(match) > 0 {
@@ -584,6 +584,34 @@ func FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, ve
 		// 版本号不存在
 		if find := strings.Contains(strings.ToLower(allResult), strings.ToLower("Weblogic")); find {
 			service_app_list = append(service_app_list, "Weblogic/N")
+		}
+	}
+
+	elasticsearch_pattern := "(?i)elasticsearch(?: REST API)?(?: Kibana)?\\s+([\\d.]+\\d)"
+	regex = regexp.MustCompile(elasticsearch_pattern)
+	match = regex.FindStringSubmatch(allResult)
+	if len(match) > 0 {
+		// 版本号存在，打印匹配结果
+		version := match[1]
+		service_app_list = append(service_app_list, "elasticsearch/"+version)
+	} else {
+		// 版本号不存在
+		if find := strings.Contains(strings.ToLower(allResult), strings.ToLower("elasticsearch")); find {
+			service_app_list = append(service_app_list, "elasticsearch/N")
+		}
+	}
+
+	wordpress_pattern := "(?i)wordpress\\s+([\\d.]+\\d)"
+	regex = regexp.MustCompile(wordpress_pattern)
+	match = regex.FindStringSubmatch(allResult)
+	if len(match) > 0 {
+		// 版本号存在，打印匹配结果
+		version := match[1]
+		service_app_list = append(service_app_list, "wordpress/"+version)
+	} else {
+		// 版本号不存在
+		if find := strings.Contains(strings.ToLower(allResult), strings.ToLower("wordpress")); find {
+			service_app_list = append(service_app_list, "wordpress/N")
 		}
 	}
 

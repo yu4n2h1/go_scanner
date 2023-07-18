@@ -4151,7 +4151,7 @@
                     "info": "",
                     "operatingsystem": "Windows",
                     "vendorproductname": "Microsoft IIS httpd",
-                    "version": "3.X"
+                    "version": "3"
                 }
             },
             {
@@ -5034,6 +5034,20 @@
                     "operatingsystem": "",
                     "vendorproductname": "Node.js",
                     "version": ""
+                }
+            },
+            {
+                "pattern": "[\\w\\W]*[Ww]ord[Pp]ress\\s+(\\d\\.\\d)[\\w\\W]*",
+                "name": "http",
+                "pattern_flag": "",
+                "versioninfo": {
+                    "cpename": "",
+                    "devicetype": "",
+                    "hostname": "",
+                    "info": "",
+                    "operatingsystem": "",
+                    "vendorproductname": "wordpress",
+                    "version": "$1"
                 }
             },
             {
@@ -6765,7 +6779,7 @@
                     "info": "",
                     "operatingsystem": "Windows",
                     "vendorproductname": "Microsoft IIS httpd",
-                    "version": "3.X"
+                    "version": "3.1"
                 }
             },
             {
