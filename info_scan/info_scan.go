@@ -116,7 +116,7 @@ func startJudge(ip string, port int) {
 				mutex.Unlock()
 				// 判断返回数据是否与匹配模式相匹配
 				for _, match := range matches {
-					pattern := match.Pattern
+					pattern := decodePatternData(match.Pattern)
 					name := match.Name
 					// vendorProductName := match.VersionInfo.VendorProductName
 					// re, err := regexp.Compile(pattern)
@@ -234,4 +234,36 @@ func decodeJsonData(str1 string) string {
 		return string(str2_byte)
 	}
 	return str1
+}
+func decodePatternData(str1 string) string {
+	str2 := ""
+	str1_length := len(str1)
+	idx := 0
+	for {
+		if idx >= str1_length {
+			break
+		}
+		if str1[idx] == '\\' {
+			if str1[idx+1] == 'x' {
+				tmp := str1[idx+2 : idx+4]
+				// fmt.Println(tmp)
+				str2 += tmp
+				idx += 4
+			} else if str1[idx+1] == '0' {
+				str2 += "00"
+				idx += 2
+			} else {
+				str2 += fmt.Sprintf("%x%x", str1[idx], str1[idx+1])
+				idx += 2
+				// fmt.Println(str2)
+			}
+		} else {
+			str2 += fmt.Sprintf("%x", str1[idx])
+			idx += 1
+		}
+	}
+	// fmt.Println(str2)
+	str2_byte, _ := hex.DecodeString(str2)
+	// fmt.Println(str2_byte)
+	return string(str2_byte)
 }
