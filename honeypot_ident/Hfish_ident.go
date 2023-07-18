@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"sync"
+	"time"
 )
 
 var hash_fingers [7][32]byte = [7][32]byte{
@@ -23,41 +25,55 @@ var hash_fingers [7][32]byte = [7][32]byte{
 func Hfish_ident(ip string) (bool, []int) {
 	score := 0
 	var res []int = make([]int, 0)
-
+	var wg sync.WaitGroup
+	var mutex sync.Mutex
 	if len(global.Alive_port[ip]) > 5 {
 		score += 3
 	}
 	for _, port := range global.Alive_port[ip] {
-		fmt.Println(port, !strings.Contains(global.Ident_server[ip][port][0], "http"))
+		wg.Add(1)
+		go func(port int) {
 
-		if !strings.Contains(global.Ident_server[ip][port][0], "http") {
-			continue
-		}
-		url := fmt.Sprintf("http://%s:%d", ip, port)
-		resp, err := http.Get(url)
-		if err != nil {
-			url := fmt.Sprintf("https://%s:%d", ip, port)
-			resp, err = http.Get(url)
+			fmt.Println(port, !strings.Contains(global.Ident_server[ip][port][0], "http"))
+
+			if !strings.Contains(global.Ident_server[ip][port][0], "http") {
+				wg.Done()
+				return
+			}
+			url := fmt.Sprintf("http://%s:%d", ip, port)
+			client := http.Client{
+				Timeout: 3 * time.Second,
+			}
+			resp, err := client.Get(url)
 			if err != nil {
-				panic(err)
+				url := fmt.Sprintf("https://%s:%d", ip, port)
+				resp, err = client.Get(url)
+				if err != nil {
+					wg.Done()
+					return
+				}
 			}
-		}
-		defer resp.Body.Close()
-		content, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			panic(err)
-		}
-		regex := regexp.MustCompile(`data-class="(.+)"`)
-		result := regex.ReplaceAll(content, []byte(`data-class=""`))
-		hash := sha256.Sum256(result)
-		for _, hash_finger := range hash_fingers {
-			if hash_finger == hash {
-				score += 4
-				res = append(res, port)
+			defer resp.Body.Close()
+			content, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				wg.Done()
+				return
 			}
-		}
-
+			regex := regexp.MustCompile(`data-class="(.+)"`)
+			result := regex.ReplaceAll(content, []byte(`data-class=""`))
+			hash := sha256.Sum256(result)
+			for _, hash_finger := range hash_fingers {
+				if hash_finger == hash {
+					mutex.Lock()
+					score += 4
+					res = append(res, port)
+					mutex.Unlock()
+				}
+			}
+			wg.Done()
+		}(port)
 	}
+	wg.Wait()
 	if score >= 9 {
 		return true, res
 	}

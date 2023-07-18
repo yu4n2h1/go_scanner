@@ -5,7 +5,7 @@ import (
 	"go_scanner/global"
 	"strconv"
 	"strings"
-	"time"
+	"sync"
 )
 
 func Honeypot_ident(ip string) {
@@ -15,23 +15,40 @@ func Honeypot_ident(ip string) {
 			sshports = append(sshports, portService.Port)
 		}
 	}
+	var wg sync.WaitGroup
+	var mutex sync.Mutex
 
 	if len(sshports) >= 2 {
 		for _, port := range sshports {
-			if DetectKippo(ip, port) {
-				global.Net_info[ip].Honeypot = append(global.Net_info[ip].Honeypot, strconv.Itoa(port)+"/"+"kippo")
-			}
+			fmt.Println(strconv.Itoa(port) + "start!!!")
+			wg.Add(1)
+			go func(port int) {
+				defer wg.Done()
+				if DetectKippo(ip, port) {
+					mutex.Lock()
+					global.Net_info[ip].Honeypot = append(global.Net_info[ip].Honeypot, strconv.Itoa(port)+"/"+"kippo")
+					mutex.Unlock()
+				}
+				fmt.Println(strconv.Itoa(port) + "finish!!!")
+
+			}(port)
 		}
 	}
 
 	for _, port := range global.Alive_port[ip] {
-		if strings.Contains(global.Ident_server[ip][port][0], "http") {
-			if DetectGlastopf(ip, port) {
-				global.Net_info[ip].Honeypot = append(global.Net_info[ip].Honeypot, strconv.Itoa(port)+"/glastopf")
+		wg.Add(1)
+		go func(port int) {
+			defer wg.Done()
+			if strings.Contains(global.Ident_server[ip][port][0], "http") {
+				if DetectGlastopf(ip, port) {
+					mutex.Lock()
+					global.Net_info[ip].Honeypot = append(global.Net_info[ip].Honeypot, strconv.Itoa(port)+"/glastopf")
+					mutex.Unlock()
+				}
 			}
-		}
+		}(port)
 	}
-	fmt.Println(4, time.Now())
+	// fmt.Println(4, time.Now())
 	// last tasks
 	isHish, HFishport := Hfish_ident(ip)
 	if isHish {
@@ -42,4 +59,5 @@ func Honeypot_ident(ip string) {
 		global.Net_info[ip].Honeypot = append(global.Net_info[ip].Honeypot, "4434/HFish")
 
 	}
+	wg.Wait()
 }

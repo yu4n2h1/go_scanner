@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"time"
 )
 
 type glastopf_finger struct {
@@ -48,11 +49,13 @@ func DetectGlastopf(ip string, port int) bool {
 
 func Get_request_text(ip string, port int, payload string) (string, error) {
 	var url string = fmt.Sprintf("http://%s:%d/"+payload, ip, port)
-
-	resp, err := http.Get(url)
+	client := http.Client{
+		Timeout: 3 * time.Second,
+	}
+	resp, err := client.Get(url)
 	if err != nil {
 		url = fmt.Sprintf("https://%s:%d/"+payload, ip, port)
-		resp, err = http.Get(url)
+		resp, err = client.Get(url)
 		if err != nil {
 			panic(err)
 		}

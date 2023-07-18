@@ -1,7 +1,6 @@
 package honeypot_ident
 
 import (
-	"fmt"
 	"net"
 	"strconv"
 	"strings"
@@ -20,6 +19,7 @@ func connect_to_ssh(ip string, port int, sendbyte []byte) string {
 	}
 	_, err = conn.Write(sendbyte)
 	responseBuf := make([]byte, 1024)
+	conn.SetDeadline(time.Now().Add(6 * time.Second))
 	_, err = conn.Read(responseBuf)
 	if err != nil {
 		return "cc3"
@@ -33,17 +33,17 @@ func DetectKippo(ip string, port int) bool {
 	// if connect_to_ssh(ip, port ,)
 	var score int = 0
 	var response string = connect_to_ssh(ip, port, []byte("SSH-1337\n"))
-	fmt.Println(response)
+	// fmt.Println(response)
 	if strings.Contains(response, "bad version") {
 		score += 1
 	}
 
 	response = connect_to_ssh(ip, port, []byte("\n\n\n\n\n\n\n\n"))
-	fmt.Println(response)
+	// fmt.Println(response)
 	if strings.Contains(response, "168430090") {
 		score += 1
 	}
-	fmt.Println(ip, port, score)
+	// fmt.Println(ip, port, score)
 	if score >= 1 {
 		return true
 	}
