@@ -1,6 +1,7 @@
 package info_scan
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"go_scanner/global"
@@ -8,6 +9,7 @@ import (
 	"net"
 	"regexp"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -92,13 +94,11 @@ func startJudge(ip string, port int) {
 			for data := range json_chan {
 				probename := data.Probename
 				matches := data.Matches
-
+				probestring := data.Probestring
 				// 向指定的端口发送 probename 数据
-				response, err := sendProbeData(ip, port, probename)
+				response, err := sendProbeData(ip, port, decodeJsonData(probestring))
 				// fmt.Println(response)
-				if err != nil {
-					// fmt.Println("无法连接到端口:", err)
-					// fmt.Println("----------------")
+				if err != nil && probename == "GetRequest" {
 					wg.Done()
 					continue
 				}
@@ -136,7 +136,7 @@ func startJudge(ip string, port int) {
 
 }
 
-func sendProbeData(ip string, port int, probename string) (string, error) {
+func sendProbeData(ip string, port int, probestring string) (string, error) {
 	// 构建目标地址
 	target := fmt.Sprintf("%s:%d", ip, port)
 
@@ -148,10 +148,15 @@ func sendProbeData(ip string, port int, probename string) (string, error) {
 	defer conn.Close()
 
 	// 设置发送和接收超时时间
-	conn.SetDeadline(time.Now().Add(3 * time.Second))
+	conn.SetDeadline(time.Now().Add(6 * time.Second))
 
 	// 发送数据
-	_, err = conn.Write([]byte(probename + "\n"))
+	length := len(probestring)
+	if length > 0 && probestring[length-1:] != "\n" {
+		probestring = probestring + "\n"
+	}
+
+	_, err = conn.Write([]byte(probestring))
 	if err != nil {
 		return "", fmt.Errorf("发送数据失败: %w", err)
 	}
@@ -164,6 +169,10 @@ func sendProbeData(ip string, port int, probename string) (string, error) {
 	}
 
 	response := string(buffer[:n])
+	// if port == 3306 && length > 6 && probestring[:6] == "GET / " {
+	// 	fmt.Println(probestring)
+	// 	fmt.Println(response)
+	// }
 	return response, nil
 }
 
@@ -180,4 +189,38 @@ func parseQuote(version string, matches []regexp2.Group) string {
 
 func replaceAll(s, old, new string) string {
 	return regexp.MustCompile(regexp.QuoteMeta(old)).ReplaceAllLiteralString(s, new)
+}
+func decodeJsonData(str1 string) string {
+	str1 = strings.Replace(str1, "\\n", "\n", -1)
+	str1 = strings.Replace(str1, "\\r", "\r", -1)
+	probe := strings.Split(str1, "\\")
+	if len(probe) > 1 {
+		str2 := ""
+		str1_length := len(str1)
+		idx := 0
+		for {
+			if idx >= str1_length {
+				break
+			}
+			if str1[idx] == '\\' {
+				if str1[idx+1] == 'x' {
+					tmp := str1[idx+2 : idx+4]
+					// fmt.Println(tmp)
+					str2 += tmp
+					idx += 4
+				} else {
+					str2 += "00"
+					idx += 2
+				}
+			} else {
+				str2 += fmt.Sprintf("%x", str1[idx])
+				idx += 1
+			}
+		}
+		// fmt.Println(str2)
+		str2_byte, _ := hex.DecodeString(str2)
+		// fmt.Println(str2_byte)
+		return string(str2_byte)
+	}
+	return str1
 }

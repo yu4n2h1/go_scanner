@@ -627,7 +627,7 @@
                 }
             },
             {
-                "pattern": "^.\\0\\0\\0\\xff..Host .* is not allowed to connect to this MariaDB server$",
+                "pattern": "..Host .* is not allowed to connect to this MariaDB server$",
                 "name": "mysql",
                 "pattern_flag": "s",
                 "versioninfo": {
@@ -2587,7 +2587,6 @@
             "9050",
             "9080",
             "9090",
-            "9200",
             "9999",
             "10000",
             "10001",
@@ -5039,6 +5038,20 @@
             },
             {
                 "pattern": "^HTTP/1\\.0 \\d\\d\\d [^\\r\\n]+\\r\\n[Cc]ontent-[Tt]ype: application/json; charset=UTF-8\\r\\n[Cc]ontent-[Ll]ength: \\d+\\r\\n\\r\\n{.*?\"name\" : \"([^\"]+)\",\\n  \"cluster_name\" : \"([^\"]+)\",(?:\\n  \"cluster_uuid\" : \"[^\"]*\",)?\\n  \"version\" : {\\n    \"number\" : \"([\\w._-]+)\",.*\"lucene_version\" : \"([^\"]+)\"\\n  },\\n  \"tagline\" : \"You Know, for Search\"\\n}\\n",
+                "name": "http",
+                "pattern_flag": "s",
+                "versioninfo": {
+                    "cpename": "a:elasticsearch:elasticsearch:$3",
+                    "devicetype": "",
+                    "hostname": "",
+                    "info": "name: $1; cluster: $2; Lucene $4",
+                    "operatingsystem": "",
+                    "vendorproductname": "Elasticsearch REST API",
+                    "version": "$3"
+                }
+            },
+            {
+                "pattern": "^HTTP/1.0 \\d{3} [^\r\\s+]+\\s+[Cc]ontent-[Tt]ype: \\S+; charset=[Uu][Tt][Ff]-8\\s+[\\S ]*\\s+[\\S ]*\\s+[Cc]ontent-[Ll]ength: \\d+\\s+[\\S ]*\\s+[\\S ]*\\s+{[\\s]*\"status\"[\\s]*:[\\s]*\\d+,[\\s]*\"name\"[\\s]*:[\\s]*\"(.*)\",\\s*\"cluster_name\"[\\s]*:[\\s]* \"([^\"]+)\",\\s*\"version\" : {\\s*\"number\" : \"(.*)\",[\\s\\S]*\"lucene_version\"\\s*:\\s*\"([\\.\\d]+)\"[\\s\\S]*\"tagline\" : \"You Know, for Search\"\\s*}",
                 "name": "http",
                 "pattern_flag": "s",
                 "versioninfo": {
