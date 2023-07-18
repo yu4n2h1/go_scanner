@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"go_scanner/global"
+	"go_scanner/honeypot_ident"
 	"go_scanner/icmp_scan"
 	"go_scanner/info_scan"
 	"go_scanner/ping_scan"
@@ -35,25 +36,18 @@ func main() {
 		fmt.Println(ip, "\t->\t", global.Alive_port[ip])
 		global.Net_info[ip] = &global.Ip_info{}
 		info_scan.InfoScan(ip, global.Alive_port[ip])
+		honeypot_ident.Honeypot_ident(ip)
 	}
 
-	// for _, ip := range global.Alive_list {
-	// 	for _, port := range global.Alive_port[ip] {
-	// 		fmt.Println(ip + ":" + strconv.Itoa(port) + " Matched:")
-	// 		for i := 0; i < 6; i++ {
-	// 			fmt.Println(global.Title[i], global.Ident_server[ip][port][i])
-	// 		}
-	// 		fmt.Println("----------------")
-	// 	}
-	// }
+	// add test honeypot ident
 	for key := range global.Net_info {
 		global.Final_info[key] = *global.Net_info[key]
 	}
+
 	Final_json, err := json.MarshalIndent(global.Final_info, "", "    ")
 	if err != nil {
 		fmt.Println("failed!", err)
 		return
 	}
 	fmt.Println(string(Final_json))
-
 }

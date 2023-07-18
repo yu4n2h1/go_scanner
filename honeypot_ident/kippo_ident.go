@@ -1,28 +1,26 @@
 package honeypot_ident
 
 import (
-	"fmt"
 	"net"
 	"strconv"
 	"strings"
-	"time"
 )
 
 func connect_to_ssh(ip string, port int, sendbyte []byte) string {
-	conn, err := net.DialTimeout("tcp", ip+":"+strconv.Itoa(port), 3*time.Second)
+	conn, err := net.DialTimeout("tcp", ip+":"+strconv.Itoa(port), 500)
 	if err != nil {
-		panic(err)
+		return ""
 	}
 	buf := make([]byte, 1024)
 	_, err = conn.Read(buf)
 	if err != nil {
-		panic(err)
+		return ""
 	}
 	_, err = conn.Write(sendbyte)
 	responseBuf := make([]byte, 1024)
 	_, err = conn.Read(responseBuf)
 	if err != nil {
-		panic(err)
+		return ""
 	}
 	conn.Close()
 	var response string = string(responseBuf)
@@ -34,12 +32,11 @@ func DetectKippo(ip string, port int) bool {
 	var score int = 0
 	var response string = connect_to_ssh(ip, port, []byte("SSH-1337\n"))
 	if strings.Contains(response, "bad version") {
-		fmt.Println("Probe Bad Version")
 		score += 1
 	}
+
 	response = connect_to_ssh(ip, port, []byte("\n\n\n\n\n\n\n\n"))
 	if strings.Contains(response, "168430090") {
-		fmt.Println("Signature Based Detection")
 		score += 1
 	}
 

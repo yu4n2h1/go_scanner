@@ -51,7 +51,11 @@ func get_request_text(ip string, port int, payload string) (string, error) {
 
 	resp, err := http.Get(url)
 	if err != nil {
-		return "", fmt.Errorf("Failed to request the website: %w", err)
+		url = fmt.Sprintf("https://%s:%d/"+payload, ip, port)
+		resp, err = http.Get(url)
+		if err != nil {
+			panic(err)
+		}
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
