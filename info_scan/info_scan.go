@@ -133,9 +133,10 @@ func startJudge(ip string, port int) {
 						service_app := FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, version)
 						// global.Ident_server[ip][port] = []string{name, deviceType, Info, operatingSystem, vendorProductName, version}
 						var p_s = global.Port_service{port, name, service_app}
+						mutex.Lock()
 						global.Net_info[ip].Service = append(global.Net_info[ip].Service, p_s)
 						global.Net_info[ip].Deviceinfo = append(global.Net_info[ip].Deviceinfo, deviceType)
-
+						mutex.Unlock()
 					}
 				}
 				wg.Done()
