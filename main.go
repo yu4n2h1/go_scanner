@@ -10,6 +10,8 @@ import (
 	"go_scanner/ping_scan"
 	"go_scanner/port_scan"
 	"go_scanner/tools"
+	"io/ioutil"
+	"strconv"
 
 	"sort"
 )
@@ -50,4 +52,9 @@ func main() {
 		return
 	}
 	fmt.Println(string(Final_json))
+	src := "scan_results/" + global.Raddr + "_" + strconv.Itoa(global.Mask) + ".json"
+	err = ioutil.WriteFile(src, Final_json, 0777)
+	if err != nil {
+		panic(err)
+	}
 }
