@@ -130,6 +130,7 @@ func startJudge(ip string, port int) {
 						Info := parseQuote(versionInfo.Info, matches.Groups())
 						version := parseQuote(versionInfo.Version, matches.Groups())
 						vendorProductName := parseQuote(versionInfo.VendorProductName, matches.Groups())
+						FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, version)
 						global.Ident_server[ip][port] = [6]string{name, deviceType, Info, operatingSystem, vendorProductName, version}
 					}
 				}
@@ -266,4 +267,321 @@ func decodePatternData(str1 string) string {
 	str2_byte, _ := hex.DecodeString(str2)
 	// fmt.Println(str2_byte)
 	return string(str2_byte)
+}
+
+func FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, version string) []string {
+	var service_app_list []string
+	allResult := name + " " + deviceType + " " + Info + " " + operatingSystem + " " + vendorProductName + " " + version
+
+	//apache
+	apache_pattern := "(?i)apache(?: httpd)?\\s+([\\d.]+)"
+	regex := regexp.MustCompile(apache_pattern)
+	match := regex.FindStringSubmatch(allResult)
+	if len(match) > 0 {
+		// 版本号存在，打印匹配结果
+		version := match[1]
+		service_app_list = append(service_app_list, "apache/"+version)
+	} else {
+		// 版本号不存在
+		if find := strings.Contains(strings.ToLower(allResult), strings.ToLower("apache")); find {
+			service_app_list = append(service_app_list, "apache/N")
+		}
+	}
+
+	ubuntu_pattern := "(?i)ubuntu\\s+([\\d.]+)"
+	regex = regexp.MustCompile(ubuntu_pattern)
+	match = regex.FindStringSubmatch(allResult)
+	if len(match) > 0 {
+		// 版本号存在，打印匹配结果
+		version := match[1]
+		service_app_list = append(service_app_list, "ubuntu/"+version)
+	} else {
+		// 版本号不存在
+		if find := strings.Contains(strings.ToLower(allResult), strings.ToLower("ubuntu")); find {
+			service_app_list = append(service_app_list, "ubuntu/N")
+		}
+	}
+
+	debian_pattern := "(?i)debian\\s+([\\d.]+)"
+	regex = regexp.MustCompile(debian_pattern)
+	match = regex.FindStringSubmatch(allResult)
+	if len(match) > 0 {
+		// 版本号存在，打印匹配结果
+		version := match[1]
+		service_app_list = append(service_app_list, "debian/"+version)
+	} else {
+		// 版本号不存在
+		if find := strings.Contains(strings.ToLower(allResult), strings.ToLower("debian")); find {
+			service_app_list = append(service_app_list, "debian/N")
+		}
+	}
+
+	centos_pattern := "(?i)centos\\s+([\\d.]+)"
+	regex = regexp.MustCompile(centos_pattern)
+	match = regex.FindStringSubmatch(allResult)
+	if len(match) > 0 {
+		// 版本号存在，打印匹配结果
+		version := match[1]
+		service_app_list = append(service_app_list, "centos/"+version)
+	} else {
+		// 版本号不存在
+		if find := strings.Contains(strings.ToLower(allResult), strings.ToLower("centos")); find {
+			service_app_list = append(service_app_list, "centos/N")
+		}
+	}
+
+	windows_pattern := "(?i)windows\\s+([\\d.]+)"
+	regex = regexp.MustCompile(windows_pattern)
+	match = regex.FindStringSubmatch(allResult)
+	if len(match) > 0 {
+		// 版本号存在，打印匹配结果
+		version := match[1]
+		service_app_list = append(service_app_list, "windows/"+version)
+	} else {
+		// 版本号不存在
+		if find := strings.Contains(strings.ToLower(allResult), strings.ToLower("windows")); find {
+			service_app_list = append(service_app_list, "windows/N")
+		}
+	}
+
+	openssh_pattern := "(?i)openssh\\s+([\\d.]+)"
+	regex = regexp.MustCompile(openssh_pattern)
+	match = regex.FindStringSubmatch(allResult)
+	if len(match) > 0 {
+		// 版本号存在，打印匹配结果
+		version := match[1]
+		service_app_list = append(service_app_list, "openssh/"+version)
+	} else {
+		// 版本号不存在
+		if find := strings.Contains(strings.ToLower(allResult), strings.ToLower("openssh")); find {
+			service_app_list = append(service_app_list, "openssh/N")
+		}
+	}
+
+	openssl_pattern := "(?i)openssl\\s+([\\d.]+)"
+	regex = regexp.MustCompile(openssl_pattern)
+	match = regex.FindStringSubmatch(allResult)
+	if len(match) > 0 {
+		// 版本号存在，打印匹配结果
+		version := match[1]
+		service_app_list = append(service_app_list, "openssl/"+version)
+	} else {
+		// 版本号不存在
+		if find := strings.Contains(strings.ToLower(allResult), strings.ToLower("openssl")); find {
+			service_app_list = append(service_app_list, "openssl/N")
+		}
+	}
+
+	LiteSpeed_pattern := "(?i)LiteSpeed(?: httpd)?\\s+([\\d.]+)"
+	regex = regexp.MustCompile(LiteSpeed_pattern)
+	match = regex.FindStringSubmatch(allResult)
+	if len(match) > 0 {
+		// 版本号存在，打印匹配结果
+		version := match[1]
+		service_app_list = append(service_app_list, "LiteSpeed/"+version)
+	} else {
+		// 版本号不存在
+		if find := strings.Contains(strings.ToLower(allResult), strings.ToLower("LiteSpeed")); find {
+			service_app_list = append(service_app_list, "LiteSpeed/N")
+		}
+	}
+
+	Jetty_pattern := "(?i)Jetty\\s+([\\d.]+)"
+	regex = regexp.MustCompile(Jetty_pattern)
+	match = regex.FindStringSubmatch(allResult)
+	if len(match) > 0 {
+		// 版本号存在，打印匹配结果
+		version := match[1]
+		service_app_list = append(service_app_list, "Jetty/"+version)
+	} else {
+		// 版本号不存在
+		if find := strings.Contains(strings.ToLower(allResult), strings.ToLower("Jetty")); find {
+			service_app_list = append(service_app_list, "Jetty/N")
+		}
+	}
+
+	java_pattern := "(?i)java\\s+([\\d.]+)"
+	regex = regexp.MustCompile(java_pattern)
+	match = regex.FindStringSubmatch(allResult)
+	if len(match) > 0 {
+		// 版本号存在，打印匹配结果
+		version := match[1]
+		service_app_list = append(service_app_list, "java/"+version)
+	} else {
+		// 版本号不存在
+		if find := strings.Contains(strings.ToLower(allResult), strings.ToLower("java")); find {
+			service_app_list = append(service_app_list, "java/N")
+		}
+	}
+
+	nodejs_pattern := "(?i)node\\.js(?: httpd)?\\s+([\\d.]+)"
+	regex = regexp.MustCompile(nodejs_pattern)
+	match = regex.FindStringSubmatch(allResult)
+	if len(match) > 0 {
+		// 版本号存在，打印匹配结果
+		version := match[1]
+		service_app_list = append(service_app_list, "node.js/"+version)
+	} else {
+		// 版本号不存在
+		if find := strings.Contains(strings.ToLower(allResult), strings.ToLower("node.js")); find {
+			service_app_list = append(service_app_list, "node.js/N")
+		}
+	}
+
+	express_pattern := "(?i)express\\s+([\\d.]+)"
+	regex = regexp.MustCompile(express_pattern)
+	match = regex.FindStringSubmatch(allResult)
+	if len(match) > 0 {
+		// 版本号存在，打印匹配结果
+		version := match[1]
+		service_app_list = append(service_app_list, "express/"+version)
+	} else {
+		// 版本号不存在
+		if find := strings.Contains(strings.ToLower(allResult), strings.ToLower("express")); find {
+			service_app_list = append(service_app_list, "express/N")
+		}
+	}
+
+	asp_pattern := "(?i)asp.net\\s+([\\d.]+)"
+	regex = regexp.MustCompile(asp_pattern)
+	match = regex.FindStringSubmatch(allResult)
+	if len(match) > 0 {
+		// 版本号存在，打印匹配结果
+		version := match[1]
+		service_app_list = append(service_app_list, "asp.net/"+version)
+	} else {
+		// 版本号不存在
+		if find := strings.Contains(strings.ToLower(allResult), strings.ToLower("asp.net")); find {
+			service_app_list = append(service_app_list, "asp.net/N")
+		}
+	}
+
+	php_pattern := "(?i)php\\s+([\\d.]+)"
+	regex = regexp.MustCompile(php_pattern)
+	match = regex.FindStringSubmatch(allResult)
+	if len(match) > 0 {
+		// 版本号存在，打印匹配结果
+		version := match[1]
+		service_app_list = append(service_app_list, "php/"+version)
+	} else {
+		// 版本号不存在
+		if find := strings.Contains(strings.ToLower(allResult), strings.ToLower("php")); find {
+			service_app_list = append(service_app_list, "php/N")
+		}
+	}
+
+	Microsoft_HTTPAPI_pattern := "(?i)Microsoft HTTPAPI httpd\\s+([\\d.]+)"
+	regex = regexp.MustCompile(Microsoft_HTTPAPI_pattern)
+	match = regex.FindStringSubmatch(allResult)
+	if len(match) > 0 {
+		// 版本号存在，打印匹配结果
+		version := match[1]
+		service_app_list = append(service_app_list, "Microsoft-HTTPAPI/"+version)
+	} else {
+		// 版本号不存在
+		if find := strings.Contains(strings.ToLower(allResult), strings.ToLower("Microsoft-HTTPAPI")); find {
+			service_app_list = append(service_app_list, "Microsoft-HTTPAPI/N")
+		}
+	}
+
+	RabbitMQ_pattern := "(?i)RabbitMQ\\s+([\\d.]+)"
+	regex = regexp.MustCompile(RabbitMQ_pattern)
+	match = regex.FindStringSubmatch(allResult)
+	if len(match) > 0 {
+		// 版本号存在，打印匹配结果
+		version := match[1]
+		service_app_list = append(service_app_list, "RabbitMQ/"+version)
+	} else {
+		// 版本号不存在
+		if find := strings.Contains(strings.ToLower(allResult), strings.ToLower("RabbitMQ")); find {
+			service_app_list = append(service_app_list, "RabbitMQ/N")
+		}
+	}
+
+	iis_pattern := "(?i)iis(?: httpd)?(?: ftpd)?(?: WebDAV)?\\s+([\\d.]+)"
+	regex = regexp.MustCompile(iis_pattern)
+	match = regex.FindStringSubmatch(allResult)
+	if len(match) > 0 {
+		// 版本号存在，打印匹配结果
+		version := match[1]
+		service_app_list = append(service_app_list, "iis/"+version)
+	} else {
+		// 版本号不存在
+		if find := strings.Contains(strings.ToLower(allResult), strings.ToLower("iis")); find {
+			service_app_list = append(service_app_list, "iis/N")
+		}
+	}
+
+	nginx_pattern := "(?i)nginx\\s+([\\d.]+)"
+	regex = regexp.MustCompile(nginx_pattern)
+	match = regex.FindStringSubmatch(allResult)
+	if len(match) > 0 {
+		// 版本号存在，打印匹配结果
+		version := match[1]
+		service_app_list = append(service_app_list, "nginx/"+version)
+	} else {
+		// 版本号不存在
+		if find := strings.Contains(strings.ToLower(allResult), strings.ToLower("nginx")); find {
+			service_app_list = append(service_app_list, "nginx/N")
+		}
+	}
+
+	micro_httpd_pattern := "(?i)micro_httpd\\s+([\\d.]+)"
+	regex = regexp.MustCompile(micro_httpd_pattern)
+	match = regex.FindStringSubmatch(allResult)
+	if len(match) > 0 {
+		// 版本号存在，打印匹配结果
+		version := match[1]
+		service_app_list = append(service_app_list, "micro_httpd/"+version)
+	} else {
+		// 版本号不存在
+		if find := strings.Contains(strings.ToLower(allResult), strings.ToLower("micro_httpd")); find {
+			service_app_list = append(service_app_list, "micro_httpd/N")
+		}
+	}
+
+	openresty_pattern := "(?i)OpenResty web app server\\s+([\\d.]+)"
+	regex = regexp.MustCompile(openresty_pattern)
+	match = regex.FindStringSubmatch(allResult)
+	if len(match) > 0 {
+		// 版本号存在，打印匹配结果
+		version := match[1]
+		service_app_list = append(service_app_list, "openresty/"+version)
+	} else {
+		// 版本号不存在
+		if find := strings.Contains(strings.ToLower(allResult), strings.ToLower("openresty")); find {
+			service_app_list = append(service_app_list, "openresty/N")
+		}
+	}
+
+	grafana_pattern := "(?i)grafana\\s+([\\d.]+)"
+	regex = regexp.MustCompile(grafana_pattern)
+	match = regex.FindStringSubmatch(allResult)
+	if len(match) > 0 {
+		// 版本号存在，打印匹配结果
+		version := match[1]
+		service_app_list = append(service_app_list, "grafana/"+version)
+	} else {
+		// 版本号不存在
+		if find := strings.Contains(strings.ToLower(allResult), strings.ToLower("grafana")); find {
+			service_app_list = append(service_app_list, "grafana/N")
+		}
+	}
+
+	Weblogic_pattern := "(?i)WebLogic(?: applications server)?(?: httpd)?(?: Server)?\\s+([\\d.]+)"
+	regex = regexp.MustCompile(Weblogic_pattern)
+	match = regex.FindStringSubmatch(allResult)
+	if len(match) > 0 {
+		// 版本号存在，打印匹配结果
+		version := match[1]
+		service_app_list = append(service_app_list, "Weblogic/"+version)
+	} else {
+		// 版本号不存在
+		if find := strings.Contains(strings.ToLower(allResult), strings.ToLower("Weblogic")); find {
+			service_app_list = append(service_app_list, "Weblogic/N")
+		}
+	}
+
+	fmt.Println(service_app_list)
+	return service_app_list
 }
