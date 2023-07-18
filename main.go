@@ -38,7 +38,7 @@ func main() {
 		info_scan.InfoScan(ip, global.Alive_port[ip])
 		honeypot_ident.Honeypot_ident(ip)
 	}
-
+	tools.ResFormat()
 	// add test honeypot ident
 	for key := range global.Net_info {
 		global.Final_info[key] = *global.Net_info[key]

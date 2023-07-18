@@ -192,6 +192,17 @@ func UniqueSlice(slice []int) []int {
 	}
 	return result
 }
+func UniqueSliceString(slice []string) []string {
+	seen := make(map[string]bool)
+	result := []string{}
+	for _, value := range slice {
+		if _, ok := seen[value]; !ok {
+			seen[value] = true
+			result = append(result, value)
+		}
+	}
+	return result
+}
 func IsPortIn(ip string, port int) bool {
 	for _, s := range global.Net_info[ip].Service {
 		if port == s.Port {
@@ -208,4 +219,29 @@ func FindPortIn(ip string, port int) *global.Port_service {
 		}
 	}
 	return nil
+}
+func ResFormat() {
+	for _, ip := range global.Alive_list {
+		//Deviceinfo
+		global.Net_info[ip].Deviceinfo = UniqueSliceString(global.Net_info[ip].Deviceinfo)
+		if (len(global.Net_info[ip].Deviceinfo) == 1 && global.Net_info[ip].Deviceinfo[0] == "") || len(global.Net_info[ip].Deviceinfo) == 0 {
+			global.Net_info[ip].Deviceinfo = nil
+		}
+		//http https
+		for _, port := range global.Alive_port[ip] {
+			if len(global.Ident_server[ip][port][0]) >= 4 && global.Ident_server[ip][port][0][:4] == "http" && !IsPortIn(ip, port) {
+				var p_s = global.Port_service{port, global.Ident_server[ip][port][0], nil}
+				global.Net_info[ip].Service = append(global.Net_info[ip].Service, p_s)
+			}
+		}
+		//null server
+		for _, port := range global.Alive_port[ip] {
+			if !IsPortIn(ip, port) {
+				var p_s global.Port_service
+				p_s.Port = port
+				global.Net_info[ip].Service = append(global.Net_info[ip].Service, p_s)
+			}
+		}
+	}
+
 }

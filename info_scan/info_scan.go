@@ -134,6 +134,7 @@ func startJudge(ip string, port int) {
 						service_app := FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, version)
 						// global.Ident_server[ip][port] = []string{name, deviceType, Info, operatingSystem, vendorProductName, version}
 						var p_s = global.Port_service{port, name, service_app}
+						device := ParseDevice(deviceType, vendorProductName)
 						mutex.Lock()
 						if tools.IsPortIn(ip, port) {
 							tmp := append(tools.FindPortIn(ip, port).Service_app, service_app...)
@@ -142,7 +143,7 @@ func startJudge(ip string, port int) {
 						} else {
 							global.Net_info[ip].Service = append(global.Net_info[ip].Service, p_s)
 						}
-						global.Net_info[ip].Deviceinfo = append(global.Net_info[ip].Deviceinfo, deviceType)
+						global.Net_info[ip].Deviceinfo = append(global.Net_info[ip].Deviceinfo, device)
 						mutex.Unlock()
 					}
 				}
@@ -280,7 +281,24 @@ func decodePatternData(str1 string) string {
 	// fmt.Println(str2_byte)
 	return string(str2_byte)
 }
-
+func ParseDevice(deviceType, vendorProductName string) string {
+	if deviceType == "webcam" {
+		if strings.Contains(strings.ToLower(vendorProductName), strings.ToLower("hikvision")) {
+			return "webcam/hikvision"
+		} else if strings.Contains(strings.ToLower(vendorProductName), strings.ToLower("dahua")) {
+			return "webcam/dahua"
+		}
+	} else if deviceType == "switch" {
+		if strings.Contains(strings.ToLower(vendorProductName), strings.ToLower("cisco")) {
+			return "switch/cisco"
+		}
+	} else if deviceType == "storage-misc" {
+		if strings.Contains(strings.ToLower(vendorProductName), strings.ToLower("synology")) {
+			return "nas/synology"
+		}
+	}
+	return ""
+}
 func FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, version string) []string {
 	var service_app_list []string
 	allResult := name + " " + deviceType + " " + Info + " " + operatingSystem + " " + vendorProductName + " " + version
