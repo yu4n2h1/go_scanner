@@ -23,13 +23,7 @@ var hash_fingers [7][32]byte = [7][32]byte{
 func Hfish_ident(ip string) (bool, []int) {
 	score := 0
 	var res []int = make([]int, 0)
-	for _, i := range global.Alive_port[ip] {
-		if i == 4434 {
-			score += 4
-		} else if i == 4433 {
-			score += 4
-		}
-	}
+
 	if len(global.Alive_port[ip]) > 5 {
 		score += 3
 	}

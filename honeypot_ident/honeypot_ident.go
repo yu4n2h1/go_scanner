@@ -38,5 +38,8 @@ func Honeypot_ident(ip string) {
 		for _, port := range HFishport {
 			global.Net_info[ip].Honeypot = append(global.Net_info[ip].Honeypot, strconv.Itoa(port)+"/HFish")
 		}
+		global.Net_info[ip].Honeypot = append(global.Net_info[ip].Honeypot, "4433/HFish")
+		global.Net_info[ip].Honeypot = append(global.Net_info[ip].Honeypot, "4434/HFish")
+
 	}
 }
