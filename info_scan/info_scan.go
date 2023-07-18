@@ -130,8 +130,12 @@ func startJudge(ip string, port int) {
 						Info := parseQuote(versionInfo.Info, matches.Groups())
 						version := parseQuote(versionInfo.Version, matches.Groups())
 						vendorProductName := parseQuote(versionInfo.VendorProductName, matches.Groups())
-						FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, version)
-						global.Ident_server[ip][port] = [6]string{name, deviceType, Info, operatingSystem, vendorProductName, version}
+						service_app := FormatResult(name, deviceType, Info, operatingSystem, vendorProductName, version)
+						// global.Ident_server[ip][port] = []string{name, deviceType, Info, operatingSystem, vendorProductName, version}
+						var p_s = global.Port_service{port, name, service_app}
+						global.Net_info[ip].Service = append(global.Net_info[ip].Service, p_s)
+						global.Net_info[ip].Deviceinfo = append(global.Net_info[ip].Deviceinfo, Info)
+
 					}
 				}
 				wg.Done()

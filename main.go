@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"go_scanner/global"
 	"go_scanner/icmp_scan"
@@ -8,7 +9,6 @@ import (
 	"go_scanner/ping_scan"
 	"go_scanner/port_scan"
 	"go_scanner/tools"
-	"strconv"
 
 	"sort"
 )
@@ -33,17 +33,27 @@ func main() {
 		global.Alive_port[ip] = tools.UniqueSlice(port_scan.Socket_scan(ip))
 		global.Ident_server[ip] = make(map[int][6]string)
 		fmt.Println(ip, "\t->\t", global.Alive_port[ip])
+		global.Net_info[ip] = &global.Ip_info{}
 		info_scan.InfoScan(ip, global.Alive_port[ip])
 	}
 
-	for _, ip := range global.Alive_list {
-		for _, port := range global.Alive_port[ip] {
-			fmt.Println(ip + ":" + strconv.Itoa(port) + " Matched:")
-			for i := 0; i < 6; i++ {
-				fmt.Println(global.Title[i], global.Ident_server[ip][port][i])
-			}
-			fmt.Println("----------------")
-		}
+	// for _, ip := range global.Alive_list {
+	// 	for _, port := range global.Alive_port[ip] {
+	// 		fmt.Println(ip + ":" + strconv.Itoa(port) + " Matched:")
+	// 		for i := 0; i < 6; i++ {
+	// 			fmt.Println(global.Title[i], global.Ident_server[ip][port][i])
+	// 		}
+	// 		fmt.Println("----------------")
+	// 	}
+	// }
+	for key := range global.Net_info {
+		global.Final_info[key] = *global.Net_info[key]
 	}
+	Final_json, err := json.MarshalIndent(global.Final_info, "", "    ")
+	if err != nil {
+		fmt.Println("failed!", err)
+		return
+	}
+	fmt.Println(string(Final_json))
 
 }
